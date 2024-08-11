@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Todo } from "../lib/definitions"; 
 import TodoItem from "./TodoItem";
-import { getTodos, postTodo, deleteTodo } from "../lib/actions";
+import { getTodos, postTodo, deleteTodo, putTodo } from "../lib/actions";
 
 export default function TodoList(){
 
@@ -32,6 +32,7 @@ export default function TodoList(){
             console.log('data in front', data[0].item_id);
             const updatedData = await getTodos();
             setTodos(updatedData);
+            setNewTodo('');
 
         } catch (err){
             console.error('Error adding', err);
@@ -49,6 +50,19 @@ export default function TodoList(){
             console.error('Error removing', err);
         }
     }
+
+    const updateTodo = async(item_id: string, description: string) =>{
+        try {
+            const data = await putTodo(item_id, description);
+            console.log('data after editing front', data);
+            const updatedData = await getTodos();
+            setTodos(updatedData);
+
+        } catch (err){
+            console.error('Error removing', err);
+        }
+    }
+
 
     return (
         <div>
@@ -75,7 +89,8 @@ export default function TodoList(){
                         <TodoItem
                             item_id={todo.item_id}
                             description={todo.description}
-                            onRemove={() => removeTodo(todo.item_id)}
+                            onEdit={updateTodo}
+                            onRemove={()=> removeTodo(todo.item_id)}
                         />
                     </li>
                 ))}

@@ -1,7 +1,6 @@
 "use server"
 
 import { db } from "@vercel/postgres"
-import { z } from 'zod';
 import { Todo } from "./definitions";
 
 export async function getTodos(){
@@ -54,6 +53,34 @@ export async function postTodo(formData: FormData){
     } catch (err){
         console.error('Error posting', err);
         throw new Error('Error inserting new data');
+    } finally {
+        client?.release();
+    }
+}
+
+export async function putTodo(item_id: string, description: string){
+    let client;
+
+    try {
+        client = await db.connect();
+        
+        const data = await client.sql`
+        UPDATE todos
+        SET description = ${description}
+        WHERE item_id = ${item_id}
+        RETURNING item_id, description, isDone
+        `
+        console.log('Inserted data in back', data.rows);
+
+        return data.rows.map((row: any) =>({
+            item_id: row.item_id,
+            description: row.description,
+            isDone: row.isdone
+        }))
+
+    } catch (err) {
+        console.error('Error putting', err);
+        throw new Error ('Error editing data');
     } finally {
         client?.release();
     }
