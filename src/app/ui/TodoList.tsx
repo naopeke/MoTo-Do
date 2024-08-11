@@ -7,46 +7,8 @@ import { getTodos, postTodo, deleteTodo } from "../lib/actions";
 
 export default function TodoList(){
 
-    // const [ todos, setTodos ] = useState<Todo[]>([
-    //     {item_id: "1a", description: "task1", isDone: false},
-    //     {item_id: "1b", description: "task2", isDone: false},
-    //     {item_id: "1c", description: "task3", isDone: false}
-    // ]); // fetch
-
     const [ todos, setTodos ] = useState<Todo[]>([]); // fetch
     const [ newTodo, setNewTodo ] = useState(''); //add
-
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const fetchedTodos = [
-    //             { item_id: "1a", description: "task1", isDone: false },
-    //             { item_id: "1b", description: "task2", isDone: false },
-    //             { item_id: "1c", description: "task3", isDone: false }
-    //         ];
-            
-    //         setTodos(fetchedTodos);
-    //     };
-
-    //     fetchData();
-    // }, []); 
-
-    // /pages/api/todosの場合
-//     useEffect(() => {
-//     const fetchTodos = async () => {
-//       try {
-//         const res = await fetch("pages/api/todos");
-//         if (!res.ok) {
-//           throw new Error(`HTTP error! status: ${res.status}`);
-//         }
-//         const data: Todo[] = await res.json();
-//         setTodos(data); // フェッチしたTODOリストを状態にセット
-//       } catch (err) {
-//         console.error("Failed to fetch todos:", err);
-//       }
-//     };
-
-//     fetchTodos();
-//   }, []);
 
     useEffect(()=>{
         const fetchPrevTodos = async () => {
@@ -59,37 +21,6 @@ export default function TodoList(){
         };
         fetchPrevTodos();
     }, []);
-
-    // const addTodo = () => {
-    //     if (newTodo){
-    //         setTodos([...todos, {item_id:(todos.length +1).toString(), description: newTodo, isDone:false}])
-    //         setNewTodo('');
-    //     }
-    // }
-
-
-    // const addTodo = async () => {
-    //     if(newTodo){
-    //         try {
-    //             const res = await fetch('/pages/api/todos', {
-    //                 method: 'POST',
-    //                 headers: { 'Content-Type': 'application/json'},
-    //                 body: JSON.stringify({ description: newTodo })
-    //             });
-
-    //             if (!res.ok){
-    //                 throw new Error (`status:  ${res.status}`);
-    //             }
-
-    //             const data = await res.json();
-    //             setTodos([...todos, data]);
-    //             setNewTodo('');
-
-    //         } catch (err) {
-    //             console.error('Failed adding', err)
-    //         }
-    //     }
-    // }
 
     const addTodo = async() =>{
         if (!newTodo.trim()) return;
@@ -107,11 +38,6 @@ export default function TodoList(){
         }
     }
 
-
-    // const removeTodo = (item_id: string) => {
-    //     setTodos(todos.filter(todo => todo.item_id !== item_id));
-    // }
-
     const removeTodo = async(item_id: string) =>{
         try {
             const data = await deleteTodo(item_id);
@@ -122,7 +48,6 @@ export default function TodoList(){
         } catch (err){
             console.error('Error removing', err);
         }
-
     }
 
     return (
