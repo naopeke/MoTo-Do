@@ -1,7 +1,7 @@
 // import { useSession, signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 
-import { signOut } from '../../../auth';
+// import { signOut } from '../../../auth';
 
 export function Header(){
     const {data: session, status} = useSession();
@@ -39,7 +39,7 @@ export function Header(){
                   <a href="/login" 
                      onClick={(e)=> {
                         e.preventDefault();
-                        signOut();
+                        // signOut();
                      }} 
                      className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-black mx-6">
                     Logout

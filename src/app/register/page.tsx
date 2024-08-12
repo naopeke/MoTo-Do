@@ -1,13 +1,61 @@
-import TodoList from "../ui/TodoList";
-import styles from "../ui/home.module.css";
+'use client'; 
+import { useState } from 'react';
+import { FormEvent } from 'react';
 
 
+export default function RegisterPage() {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-export default function Home() {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const response = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password }),
+    });
+
+    if (response.ok) {
+      console.log('Registration successful');
+    } else {
+      console.log('Registration failed');
+    }
+  };
+
   return (
-    <main className={`${styles.homePage} flex min-h-screen flex-col items-center p-24`}>
-      <h1 className="m-3 font-extrabold">Naopeke Todo</h1>
-       <TodoList></TodoList>
-    </main>
+    <form onSubmit={handleSubmit}>
+        <label>
+        Username:
+        <input
+          type="text"
+          name="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+      </label>
+      <label>
+        Email:
+        <input
+          type="email"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </label>
+      <label>
+        Password:
+        <input
+          type="password"
+          name="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </label>
+      <button type="submit">Register</button>
+    </form>
   );
 }
