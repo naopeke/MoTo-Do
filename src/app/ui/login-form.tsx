@@ -8,8 +8,6 @@ import {
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
 import { FormEvent, useState } from 'react';
-import { authenticate } from '@/app/lib/actions';
-import { redirect } from 'next/dist/server/api-utils';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -17,20 +15,23 @@ import { useRouter } from 'next/navigation';
 export default function LoginForm() {
 
     const router = useRouter();
+    const [error, setError] = useState<string | null>(null);
+    
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
       const formData = new FormData(e.currentTarget);
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
+  
       const response = await signIn('credentials', {
-        email: formData.get('email'),
-        password: formData.get('password'),
+        email,
+        password,
         redirect: false,
       });
   
       console.log({ response });
-      if (!response?.error) {
-        router.push('/');
-        router.refresh();
-      }
+
     };
 
 
@@ -84,17 +85,17 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <Button className="mt-4 w-full aria-disabled={pending}">
+        <button type="submit" className="mt-4 w-full aria-disabled={pending}">
           Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
-        <div className="flex h-8 items-end space-x-1" aria-live="polite" aria-atomic="true">
+        </button>
+        {/* <div className="flex h-8 items-end space-x-1" aria-live="polite" aria-atomic="true"> */}
         {/* {errorMessage && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
               <p className="text-sm text-red-500">{errorMessage}</p>
             </>
           )} */}
-        </div>
+        {/* </div> */}
       </div>
     </form>
   );
