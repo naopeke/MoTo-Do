@@ -3,3 +3,15 @@
 @tailwind utilities;
 
 
+[class*=container]{
+    max-width: 128rem;
+    margin: 0 auto;
+    width: 95%;
+}
+
+[class*=heading]{
+    font-size: 4rem;
+    text-align: center;
+    font-weight: 900;
+    margin: 5rem 0;
+}

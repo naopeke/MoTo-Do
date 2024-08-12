@@ -2,6 +2,36 @@
 
 import { db } from "@vercel/postgres"
 import { Todo } from "./definitions";
+import { z } from 'zod';
+import { signIn } from '../../../auth';
+import { AuthError } from 'next-auth';
+
+const FormSchema = z.object({
+    user_id: z.string(),
+    username: z.string(),
+    email: z.string(),
+    password: z.string(),
+})
+
+export async function authenticate(_currentState: unknown, formData: FormData) {
+    try {
+      await signIn('credentials', formData)
+    } catch (error) {
+        const err = error as {type?: string}
+
+      if (err) {
+        switch (err.type) {
+          case 'CredentialsSignin':
+            return 'Invalid credentials.'
+          default:
+            return 'Something went wrong.'
+        }
+      }
+      throw error
+    }
+  }
+
+const signupUser = FormSchema.omit({email: true, password: true})
 
 export async function getTodos(){
     let client;

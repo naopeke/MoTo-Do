@@ -1,5 +1,38 @@
 import { db } from "@vercel/postgres";
-import { todos } from "../lib/placeholder-data";
+import bcrypt from 'bcrypt';
+import { todos, users } from "../lib/placeholder-data";
+
+async function seedUsers() {
+  const client = await db.connect();
+
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    await client.sql`
+      CREATE TABLE IF NOT EXISTS users (
+        user_id SERIAL PRIMARY KEY,,
+        username VARCHAR(255) NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+      );
+    `;
+    const insertedUsers = await Promise.all(
+      users.map(async (user) => {
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        return client.sql`
+          INSERT INTO users (user_id, username, email, password)
+          VALUES (${user.user_id}, ${user.username}, ${user.email}, ${hashedPassword})
+          ON CONFLICT (user_id) DO NOTHING;
+        `;
+      }),
+    );
+    return insertedUsers;
+  } catch (err){
+    console.error('Error seeding', err)
+  } finally {
+    client.release();
+  }
+
+}
 
 async function seedTodos() {
   const client = await db.connect();
