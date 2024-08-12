@@ -9,7 +9,7 @@ async function seedUsers() {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
     await client.sql`
       CREATE TABLE IF NOT EXISTS users (
-        user_id SERIAL PRIMARY KEY,,
+        user_id SERIAL PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         email TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL
@@ -67,6 +67,7 @@ export async function GET() {
 
   try {
     await client.sql`BEGIN`;
+    await seedUsers();
     await seedTodos();
     await client.sql`COMMIT`;
 
