@@ -5,7 +5,6 @@ import { Todo } from "./definitions";
 
 export async function getTodos(){
     let client;
-
     try {
         client = await db.connect();
         const data = await client.sql`
@@ -17,13 +16,10 @@ export async function getTodos(){
             description: row.description,
             isDone: row.isDone
         }));
-
         return todos;
-
     } catch (err){
         console.error('Error fetching Todos:', err);
         throw new Error('Failed to fetch Todos');
-
     } finally {
         client?.release();
     }
@@ -33,9 +29,7 @@ export async function getTodos(){
 export async function postTodo(formData: FormData){
     const description = formData.get('description') as string;
     const isDone = 'false';
-
     let client;
-
     try {
         client = await db.connect();
         const data = await client.sql`
@@ -44,7 +38,6 @@ export async function postTodo(formData: FormData){
         RETURNING item_id
         `
         console.log('Inserted data in back', data.rows);
-
         return data.rows.map((row:any)=>({
             item_id: row.item_id,
             description: row.description,
@@ -60,10 +53,8 @@ export async function postTodo(formData: FormData){
 
 export async function putTodo(item_id: string, description: string){
     let client;
-
     try {
         client = await db.connect();
-        
         const data = await client.sql`
         UPDATE todos
         SET description = ${description}
@@ -71,13 +62,11 @@ export async function putTodo(item_id: string, description: string){
         RETURNING item_id, description, isDone
         `
         console.log('Inserted data in back', data.rows);
-
         return data.rows.map((row: any) =>({
             item_id: row.item_id,
             description: row.description,
             isDone: row.isdone
         }))
-
     } catch (err) {
         console.error('Error putting', err);
         throw new Error ('Error editing data');
@@ -89,7 +78,6 @@ export async function putTodo(item_id: string, description: string){
 
 export async function deleteTodo(item_id: string) {
     let client;
-
     try {
         client = await db.connect();
         const data = await client.sql`

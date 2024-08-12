@@ -24,7 +24,6 @@ export default function TodoList(){
 
     const addTodo = async() =>{
         if (!newTodo.trim()) return;
-
         try {
             const formData = new FormData();
             formData.append('description', newTodo)
@@ -33,7 +32,6 @@ export default function TodoList(){
             const updatedData = await getTodos();
             setTodos(updatedData);
             setNewTodo('');
-
         } catch (err){
             console.error('Error adding', err);
         }
@@ -45,7 +43,6 @@ export default function TodoList(){
             console.log('data after removing front', data);
             const updatedData = await getTodos();
             setTodos(updatedData);
-
         } catch (err){
             console.error('Error removing', err);
         }
@@ -57,13 +54,11 @@ export default function TodoList(){
             console.log('data after editing front', data);
             const updatedData = await getTodos();
             setTodos(updatedData);
-
         } catch (err){
             console.error('Error removing', err);
         }
     }
-
-
+    
     return (
         <div>
             <div>

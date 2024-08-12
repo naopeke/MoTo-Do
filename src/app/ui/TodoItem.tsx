@@ -14,9 +14,9 @@ type TodoItemProps = {
 export default function TodoItem ({item_id, description, onEdit, onRemove}: TodoItemProps){
 
     const [isEditing, setIsEditing] = useState(false);
-    const [editedTodo, setEditedTodo] = useState(description)
+    const [editedTodo, setEditedTodo] = useState(description);
+    const [isCompleted, setIsCompleted] = useState(false)
 
-    
     const handleEdit = () => {
         setIsEditing(true);
     };
@@ -26,7 +26,9 @@ export default function TodoItem ({item_id, description, onEdit, onRemove}: Todo
         setIsEditing(false);
     };
 
-    
+    const handleCheckboxChange = () => {
+        setIsCompleted(!isCompleted)
+    }
 
     return (
         <div>
@@ -48,11 +50,19 @@ export default function TodoItem ({item_id, description, onEdit, onRemove}: Todo
             ): (
                 <div className="flex justify-between">
                     <div>
-                        <span>{description}</span>
+                        <input 
+                            type="checkbox"
+                            checked={isCompleted}
+                            onChange={handleCheckboxChange}
+                            className="m-2"
+                        />
+                        <span className={isCompleted? "line-through": ""}>
+                            {description}
+                        </span>
                     </div>
                     <div>
                         <button
-                            className="p-2 rounded-md bg-yellow-600"
+                            className="p-2 mr-1 rounded-md bg-yellow-600"
                             onClick={handleEdit}
                         >Edit
                         </button>
