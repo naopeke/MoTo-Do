@@ -21,16 +21,21 @@ export default function LoginForm() {
       e.preventDefault();
 
       const formData = new FormData(e.currentTarget);
-      const email = formData.get('email') as string;
-      const password = formData.get('password') as string;
+      // const email = formData.get('email') as string;
+      // const password = formData.get('password') as string;
   
-      const response = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
+      // const response = await signIn('credentials', {
+      //   email,
+      //   password,
+      //   redirect: false,
+      // });
+      signIn('credentials',{
+        email: formData.get('email'),
+        password:formData.get('password'),
+        redirect:false
+      })
   
-      console.log({ response });
+      // console.log({ response });
 
     };
 

@@ -23,7 +23,7 @@ const handler = NextAuth({
       },
       async authorize(credentials, req) {
         
-        console.log(credentials);
+        console.log({credentials});
         // const email = credentials.email as string | undefined;
         // const password = credentials.password as string | undefined;
 
