@@ -17,7 +17,6 @@ export async function loginUser(formData: FormData) {
         console.log('Login in back', data.rows);
 
         const user = data.rows[0];
-
         if (!user) {
             throw new Error('User not found');
         }
@@ -39,6 +38,7 @@ export async function loginUser(formData: FormData) {
         client?.release();
     }
 }
+
 
 export async function registerUser(formData: FormData) {
     const username = formData.get('username') as string;
@@ -65,7 +65,6 @@ export async function registerUser(formData: FormData) {
         client?.release();
     }
 }
-
 
 
 export async function getTodos(){
@@ -115,6 +114,7 @@ export async function postTodo(formData: FormData){
         client?.release();
     }
 }
+
 
 export async function putTodo(item_id: string, description: string){
     let client;
