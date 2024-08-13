@@ -72,13 +72,13 @@ export async function getTodos(){
     try {
         client = await db.connect();
         const data = await client.sql`
-            SELECT * FROM todos;    
-        `;
+            SELECT * FROM todos
+        ;`;
 
         const todos: Todo[] = data.rows.map(row => ({
             item_id: row.item_id,
             description: row.description,
-            isDone: row.isDone
+            isDone: row.isdone
         }));
         return todos;
     } catch (err){
@@ -150,6 +150,27 @@ export async function deleteTodo(item_id: string) {
         `
         console.log('Deleted', data.rows);
         return { message: 'deleted'}
+    } catch (err){
+        console.error('Error deleting', err);
+        throw new Error ('Error deleting data');
+    } finally {
+        client?.release();
+    }
+}
+
+
+export async function doneTodo(item_id: string, isDone:boolean) {
+    let client;
+    try {
+        client = await db.connect();
+        const data = await client.sql`
+            UPDATE todos 
+            SET isdone = ${isDone}
+            WHERE item_id = ${item_id}
+            RETURNING item_id, description, isdone;
+        `
+        console.log('Check changed', data.rows);
+        return data.rows;
     } catch (err){
         console.error('Error deleting', err);
         throw new Error ('Error deleting data');
