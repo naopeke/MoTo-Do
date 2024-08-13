@@ -7,8 +7,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { FormEvent, useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { loginUser } from '../lib/actions';
 import z from "zod";
 
 
@@ -16,46 +16,32 @@ export default function LoginForm() {
 
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
 
     const FormSchema = z.object({
         email: z.string().email ({ message: 'Invalid email address'}),
         password: z.string().min(6, {message: 'Password must be at least 6 characters'})
     });
-        
+
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
       const formData = new FormData(e.currentTarget);
-      const email = formData.get('email') as string;
-      const password = formData.get('password') as string;
+      formData.append('email',email);
+      formData.append('password', password);
 
-      const validation = FormSchema.safeParse({ email, password });
-      if (!validation.success) {
-        setError(validation.error.errors.map(err => err.message).join(', '));
-        return;
+      try {
+        const user = await loginUser(formData);
+        console.log('User data', user)
+        router.push('/todo');
+      } catch(err){
+        console.error('Error logging in', err);
+        setError('Does not match with the database');
       }
-      setError(null); 
-  
-      const response:any = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (!response.ok){
-        setError('Network response was not ok');
-      } else {
-        console.log('Login successful', response);
-        router.push('/');
-      }
-
-      signIn('credentials',{
-        email: formData.get('email'),
-        password:formData.get('password'),
-        redirect:false
-      })
-  
-    };
+    }
 
 
   return (
@@ -111,6 +97,7 @@ export default function LoginForm() {
         <button type="submit" className="mt-4 w-full aria-disabled={pending}">
           Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </button>
+        {error && <p className="text-red-500">{error}</p>}
       </div>
     </form>
   );

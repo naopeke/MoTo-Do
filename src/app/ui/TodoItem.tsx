@@ -1,8 +1,6 @@
 "use client"
 
-import { Todo } from "../lib/definitions"
 import { useState } from "react"
-import { getTodos, putTodo } from "../lib/actions"
 
 type TodoItemProps = {
     item_id: string;
