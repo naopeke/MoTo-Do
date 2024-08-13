@@ -70,16 +70,21 @@ export default function TodoList(){
                     onChange ={(event)=> setNewTodo(event.target.value)}
                 />
                 <button 
-                    className="m-3 p-2 shadow-md border border-white rounded-md"
+                    className="m-3 p-2 shadow-md bg-pink-400 rounded-full"
                     onClick={addTodo}
-                >Enter</button>
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+
+              </button>
             </div>
 
             <div>
             <ul>
                 {todos.map((todo: Todo) => (
                     <li key={todo.item_id} 
-                        className="p-2 border border-white rounded-md"
+                        className="p-2 shadow-md rounded-md"
                     >
                         <TodoItem
                             item_id={todo.item_id}

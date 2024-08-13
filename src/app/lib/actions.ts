@@ -2,6 +2,70 @@
 
 import { db } from "@vercel/postgres"
 import { Todo } from "./definitions";
+import bcrypt from 'bcrypt';
+
+export async function loginUser(formData: FormData) {
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    let client;
+    try {
+        client = await db.connect();
+        const data = await client.sql`
+            SELECT * FROM users
+            WHERE email = ${email}
+        `;
+        console.log('Login in back', data.rows);
+
+        const user = data.rows[0];
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            throw new Error('Password does not match');
+        }
+
+        return {
+            user_id: user.user_id,
+            username: user.username,
+            email: user.email,
+        };
+    } catch (err) {
+        console.error('Error posting', err);
+        throw new Error('Error matching the data');
+    } finally {
+        client?.release();
+    }
+}
+
+
+export async function registerUser(formData: FormData) {
+    const username = formData.get('username') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    let client;
+
+    try {
+        client = await db.connect();
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const data = await client.sql`
+            INSERT INTO users (username, email, password)
+            VALUES (${username}, ${email}, ${hashedPassword})
+            RETURNING user_id, email
+        `;
+
+        console.log('User created:', data.rows[0]);
+
+        return data.rows[0];
+    } catch (err) {
+        console.error('Error creating user:', err);
+        throw new Error('Error creating user');
+    } finally {
+        client?.release();
+    }
+}
+
 
 export async function getTodos(){
     let client;
@@ -50,6 +114,7 @@ export async function postTodo(formData: FormData){
         client?.release();
     }
 }
+
 
 export async function putTodo(item_id: string, description: string){
     let client;
