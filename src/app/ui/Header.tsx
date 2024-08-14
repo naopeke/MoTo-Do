@@ -1,31 +1,30 @@
 'use client';
 
 import Link from "next/link";
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from "react"; //occur error if you use localStrage only
 import Image from "next/image";
-import { useSession, signOut } from "next-auth/react";
 
 export default function Header() {
     const pathname = usePathname();
-    const { data: session, status } = useSession();
+    const router = useRouter();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    console.log('Session', session);
-    console.log('Status', status)
+    useEffect(()=> {
+        const user = localStorage.getItem('user');
+        setIsLoggedIn(user !== null);
+    })
 
     const handleLogout = async () => {
-        await signOut({ callbackUrl: '/' });
+        localStorage.removeItem('user');
+        router.push('/')
     };
-
-    if (status === 'loading') {
-        return <div>Loading...</div>;
-    }
-
 
 
     return(
         <header className="py-3">
             <nav className="flex justify-between">
-                {session?.user?.id ? (
+                {isLoggedIn ? (
                 <>
                     <div>
                         <Link title="App Title" href="/" className="text-pink-600 font-extrabold text-xl ml-5">MoTo-Do</Link>

@@ -36,7 +36,10 @@ export default function LoginForm() {
       try {
         const user = await loginUser(formData);
         console.log('User data', user)
-        router.push('/todo');
+        if (user){
+          localStorage.setItem('user', JSON.stringify(user));
+          router.push('/todo');
+        }
       } catch(err){
         console.error('Error logging in', err);
         setError('Does not match with the database');

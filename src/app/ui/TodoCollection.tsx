@@ -5,44 +5,45 @@ import { useRouter } from "next/navigation";
 import { TodoListCollection } from "../lib/definitions";
 import TodoCollectionItem from "./TodoCollectionItem";
 import { getCollections, postCollection, deleteCollection, putCollection } from "../lib/actions";
-import { List, arrayMove } from "react-movable";
-import { useSession } from "next-auth/react";
+
 
 export default function TodoCollection() {
   const [todos, setTodos] = useState<TodoListCollection[]>([]); // fetch
   const [newTodo, setNewTodo] = useState(""); // add
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const [userId, setUserId] =useState<number>(); //localstorage
 
-  console.log('session', session);
-  console.log('status', status);
+  useEffect(()=>{
+    const user = localStorage.getItem('user');
+    if(user){
+      const userData = JSON.parse(user);
+      setUserId(userData.user_id);
+    }
+  },[]);
 
   useEffect(() => {
+    if (userId !== undefined) { 
     const fetchPrevTodos = async () => {
-        if (session?.user?.id) {
       try {
-        const user_id = Number(session.user.id);
-        const data = await getCollections(user_id);
+        const data = await getCollections(userId);
         setTodos(data);
-        console.log('session', session);
-        console.log('status', status);
       } catch (err) {
-        console.error("Failed to fetch data", err);
-      }}
-    };
-    fetchPrevTodos();
-  }, []);
+        console.error('Failed to fetch data', err);
+      }
+      };
+      fetchPrevTodos();
+    }
+  }, [userId]); 
 
 
   const addCollection = async () => {
-    if (!newTodo.trim() || !session?.user?.id) return;
-    const user_id = Number(session.user.id);
+    if (!newTodo.trim() || userId === undefined) return;
 
     try {
       const formData = new FormData();
       formData.append("description", newTodo);
-      const data = await postCollection(formData, user_id);
-      const updatedData = await getCollections(user_id);
+      const data = await postCollection(formData, userId);
+      const updatedData = await getCollections(userId);
       setTodos(updatedData);
       setNewTodo("");
     } catch (err) {
@@ -51,12 +52,11 @@ export default function TodoCollection() {
   };
 
   const removeCollection = async (collection_id: number) => {
-    if (!session?.user?.id) return;
-    const user_id = Number(session.user.id);
+    if (userId === undefined) return;
 
     try {
       await deleteCollection(collection_id);
-      const updatedData = await getCollections(user_id);
+      const updatedData = await getCollections(userId);
       setTodos(updatedData);
     } catch (err) {
       console.error("Error removing", err);
@@ -64,11 +64,11 @@ export default function TodoCollection() {
   };
 
   const updateCollection = async (collection_id: number, collection_name: string) => {
-    if (!session?.user?.id) return;
-    const user_id = Number(session.user.id);
+    if (userId === undefined) return;
+
     try {
       await putCollection(collection_id, collection_name);
-      const updatedData = await getCollections(user_id);
+      const updatedData = await getCollections(userId);
       setTodos(updatedData);
     } catch (err) {
       console.error("Error updating", err);
