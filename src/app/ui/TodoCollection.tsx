@@ -19,15 +19,20 @@ export default function TodoCollection() {
 
   useEffect(() => {
     const fetchPrevTodos = async () => {
+        if (session?.user?.id) {
       try {
-        const data = await getCollections();
+        const user_id = Number(session.user.id);
+        const data = await getCollections(user_id);
         setTodos(data);
+        console.log('session', session);
+        console.log('status', status);
       } catch (err) {
         console.error("Failed to fetch data", err);
-      }
+      }}
     };
     fetchPrevTodos();
   }, []);
+
 
   const addCollection = async () => {
     if (!newTodo.trim() || !session?.user?.id) return;
@@ -37,7 +42,7 @@ export default function TodoCollection() {
       const formData = new FormData();
       formData.append("description", newTodo);
       const data = await postCollection(formData, user_id);
-      const updatedData = await getCollections();
+      const updatedData = await getCollections(user_id);
       setTodos(updatedData);
       setNewTodo("");
     } catch (err) {
@@ -46,9 +51,12 @@ export default function TodoCollection() {
   };
 
   const removeCollection = async (collection_id: number) => {
+    if (!session?.user?.id) return;
+    const user_id = Number(session.user.id);
+
     try {
       await deleteCollection(collection_id);
-      const updatedData = await getCollections();
+      const updatedData = await getCollections(user_id);
       setTodos(updatedData);
     } catch (err) {
       console.error("Error removing", err);
@@ -56,9 +64,11 @@ export default function TodoCollection() {
   };
 
   const updateCollection = async (collection_id: number, collection_name: string) => {
+    if (!session?.user?.id) return;
+    const user_id = Number(session.user.id);
     try {
       await putCollection(collection_id, collection_name);
-      const updatedData = await getCollections();
+      const updatedData = await getCollections(user_id);
       setTodos(updatedData);
     } catch (err) {
       console.error("Error updating", err);

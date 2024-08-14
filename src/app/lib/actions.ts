@@ -180,12 +180,13 @@ export async function doneTodo(item_id: number, isDone:boolean) {
 }
 
 
-export async function getCollections(){
+export async function getCollections(user_id: number){
     let client;
     try {
         client = await db.connect();
         const data = await client.sql`
             SELECT * FROM collections
+            WHERE user_id = ${user_id}
         ;`;
 
         const collections: TodoListCollection[] = data.rows.map(row => ({
