@@ -14,7 +14,7 @@ export default function HomePage() {
           <h1 className="text-4xl font-bold">Plan your next two-wheeled adventure with ease.</h1>
           <h4 className="mt-2 text-lg">The all-in-one app for bikers.</h4>
           <a
-            href="/register"
+            href="/login"
             className="mt-4 inline-block bg-white text-black py-2 px-4 rounded-full hover:bg-pink-500"
           >
             Get Started

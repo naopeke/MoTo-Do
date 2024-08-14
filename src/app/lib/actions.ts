@@ -78,7 +78,8 @@ export async function getTodos(){
         const todos: Todo[] = data.rows.map(row => ({
             item_id: row.item_id,
             description: row.description,
-            isDone: row.isdone
+            isDone: row.isdone,
+            order_index: row.order_index
         }));
         return todos;
     } catch (err){
@@ -90,22 +91,23 @@ export async function getTodos(){
 }
 
 
-export async function postTodo(formData: FormData){
+export async function postTodo(formData: FormData, order_index:number){
     const description = formData.get('description') as string;
     const isDone = 'false';
     let client;
     try {
         client = await db.connect();
         const data = await client.sql`
-        INSERT INTO todos (description, isDone)
-        VALUES (${description}, ${isDone})
+        INSERT INTO todos (description, isDone, order_index)
+        VALUES (${description}, ${isDone}, ${order_index})
         RETURNING item_id
         `
         console.log('Inserted data in back', data.rows);
         return data.rows.map((row:any)=>({
             item_id: row.item_id,
             description: row.description,
-            isDone: row.isDone
+            isDone: row.isDone,
+            order_index: row.order_index
         }))
     } catch (err){
         console.error('Error posting', err);
@@ -178,3 +180,27 @@ export async function doneTodo(item_id: string, isDone:boolean) {
         client?.release();
     }
 }
+
+export const updateTodoOrder = async (orderedTodos: Todo[]) => {
+    let client:any;
+    try {
+        client = await db.connect()
+        const data = orderedTodos.map((todo, index) => {
+            return client.sql`
+                UPDATE todos
+                SET order_index = ${index}
+                WHERE item_id = ${todo.item_id}
+            `;
+        });
+        console.log('Generated SQL queries:', data);
+
+        for (const query of data) {
+            console.log('Executing query:', query.text);
+            await query;
+        }
+    } catch (err) {
+        console.error('Error updating todos order', err);
+    } finally {
+        client?.release();
+    }
+};

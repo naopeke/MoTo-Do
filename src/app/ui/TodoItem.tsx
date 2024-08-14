@@ -9,9 +9,10 @@ type TodoItemProps = {
     isDone: boolean;
     onEdit: (item_id: string, description: string) => void;
     onRemove: (item_id: string) => void;
+    onCheckboxChange: (item_id: string, isDone: boolean) => void;
 }
 
-export default function TodoItem ({item_id, description, isDone, onEdit, onRemove}: TodoItemProps){
+export default function TodoItem ({item_id, description, isDone, onEdit, onRemove, onCheckboxChange}: TodoItemProps){
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedTodo, setEditedTodo] = useState(description);
@@ -26,12 +27,10 @@ export default function TodoItem ({item_id, description, isDone, onEdit, onRemov
         setIsEditing(false);
     };
 
-    const handleCheckboxChange = async () => {
-        const newStatus = !frontIsDone;
+    const handleCheckboxChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newStatus = event.target.checked;
         setFrontIsDone(newStatus);
-        await doneTodo(item_id, newStatus);
-
-        const updatedTodos = await getTodos();
+        onCheckboxChange(item_id, newStatus);
     }
 
     return (
