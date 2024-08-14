@@ -11,7 +11,6 @@ import { useSession } from "next-auth/react";
 export default function TodoCollection() {
   const [todos, setTodos] = useState<TodoListCollection[]>([]); // fetch
   const [newTodo, setNewTodo] = useState(""); // add
-  const [items, setItems] = useState<TodoListCollection[]>([]); // react-movable
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -23,7 +22,6 @@ export default function TodoCollection() {
       try {
         const data = await getCollections();
         setTodos(data);
-        setItems(data); // Initialize items with fetched todos
       } catch (err) {
         console.error("Failed to fetch data", err);
       }
@@ -41,7 +39,6 @@ export default function TodoCollection() {
       const data = await postCollection(formData, user_id);
       const updatedData = await getCollections();
       setTodos(updatedData);
-      setItems(updatedData);
       setNewTodo("");
     } catch (err) {
       console.error("Error adding", err);
@@ -53,18 +50,16 @@ export default function TodoCollection() {
       await deleteCollection(collection_id);
       const updatedData = await getCollections();
       setTodos(updatedData);
-      setItems(updatedData); // Update items as well
     } catch (err) {
       console.error("Error removing", err);
     }
   };
 
-  const updateTodo = async (item_id: number, description: string) => {
+  const updateCollection = async (collection_id: number, collection_name: string) => {
     try {
-      await putCollection(item_id, description);
+      await putCollection(collection_id, collection_name);
       const updatedData = await getCollections();
       setTodos(updatedData);
-      setItems(updatedData); // Update items as well
     } catch (err) {
       console.error("Error updating", err);
     }
@@ -74,17 +69,6 @@ export default function TodoCollection() {
     router.push(`/todo/${collection_id}`);
   }
 
-
-  const handleDragEnd = async ({ oldIndex, newIndex,}: { oldIndex: number; newIndex: number;}) => {
-    if (oldIndex !== newIndex) {
-      const reorderedItems = arrayMove(items, oldIndex, newIndex);
-      setItems(reorderedItems);
-
-      const updatedTodos = reorderedItems.map((item, index) => ({
-        ...item,index,
-    }));
-    }
-  };
 
   return (
     <div>
@@ -115,53 +99,23 @@ export default function TodoCollection() {
         </button>
       </div>
 
-      <div
-        style={{
-          maxWidth: "800px",
-          margin: "0px auto",
-          backgroundColor: "#F7F7F7",
-        }}
-      >
-        <List
-          values={items}
-          onChange={handleDragEnd}
-          renderList={({ children, props, isDragged }) => (
-            <ul
-              {...props}
-              style={{ padding: 0, cursor: isDragged ? "grabbing" : undefined }}
-            >
-              {children}
+      <div>
+            <ul>
+                {todos.map((collection: TodoListCollection) => (
+                    <li key={collection.collection_id} 
+                        className="p-2 shadow-md rounded-md"
+                    >
+                        <TodoCollectionItem
+                            collection_id={collection.collection_id}
+                            collection_name={collection.collection_name}
+                            onEdit={updateCollection}
+                            onRemove={()=> removeCollection(collection.collection_id)}
+                            onRedirect={redirect}
+                        />
+                    </li>
+                ))}
             </ul>
-          )}
-          renderItem={({ value, props, isDragged, isSelected }) => (
-            <li
-              {...props}
-              key={props.key}
-              style={{
-                ...props.style,
-                padding: "1.5em",
-                margin: "0.5em 0em",
-                listStyleType: "none",
-                cursor: isDragged ? "grabbing" : "grab",
-                border: "1px solid #CCC",
-                boxShadow: "3px 3px #AAA",
-                color: "#333",
-                borderRadius: "5px",
-                fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-                backgroundColor: isDragged || isSelected ? "#EEE" : "#FFF",
-              }}
-            >
-              <TodoCollectionItem
-                collection_id={value.collection_id}
-                collection_name={value.collection_name}
-                onEdit={updateTodo}
-                onRemove={() => removeCollection(value.collection_id)}
-                onRedirect={()=> redirect(value.collection_id)}
-              />
-            </li>
-          )}
-        />
-      </div>
+            </div>
     </div>
   );
 }
