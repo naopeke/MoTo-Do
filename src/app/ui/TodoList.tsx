@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Todo } from "../lib/definitions"; 
 import TodoItem from "./TodoItem";
-import { getTodos, postTodo, deleteTodo, putTodo } from "../lib/actions";
+import { getTodos, postTodo, deleteTodo, putTodo, doneTodo } from "../lib/actions";
 
 export default function TodoList(){
 
@@ -37,7 +37,7 @@ export default function TodoList(){
         }
     }
 
-    const removeTodo = async(item_id: string) =>{
+    const removeTodo = async(item_id: number) =>{
         try {
             const data = await deleteTodo(item_id);
             console.log('data after removing front', data);
@@ -48,7 +48,7 @@ export default function TodoList(){
         }
     }
 
-    const updateTodo = async(item_id: string, description: string) =>{
+    const updateTodo = async(item_id: number, description: string) =>{
         try {
             const data = await putTodo(item_id, description);
             console.log('data after editing front', data);
@@ -73,9 +73,10 @@ export default function TodoList(){
                     className="m-3 p-2 shadow-md bg-pink-400 rounded-full"
                     onClick={addTodo}
                 >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff" className="size-6">
+                <path fillRule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
                 </svg>
+
 
               </button>
             </div>
@@ -89,6 +90,7 @@ export default function TodoList(){
                         <TodoItem
                             item_id={todo.item_id}
                             description={todo.description}
+                            isDone={todo.isDone}
                             onEdit={updateTodo}
                             onRemove={()=> removeTodo(todo.item_id)}
                         />

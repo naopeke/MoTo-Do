@@ -36,7 +36,10 @@ export default function LoginForm() {
       try {
         const user = await loginUser(formData);
         console.log('User data', user)
-        router.push('/todo');
+        if (user){
+          localStorage.setItem('user', JSON.stringify(user));
+          router.push('/todo');
+        }
       } catch(err){
         console.error('Error logging in', err);
         setError('Does not match with the database');
@@ -46,7 +49,7 @@ export default function LoginForm() {
 
   return (
     <form 
-        className="space-y-3"
+        className="space-y-3 max-w-md mx-auto m-20"
         onSubmit={handleSubmit}    
     >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
@@ -97,7 +100,7 @@ export default function LoginForm() {
         <button type="submit" className="mt-4 w-full aria-disabled={pending}">
           Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </button>
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-red-500"><ExclamationCircleIcon/>{error}</p>}
       </div>
     </form>
   );
