@@ -18,3 +18,11 @@ export type TodoListCollection = {
     id_user?: number;
     username?: string;
 }
+
+export type Route = {
+    route_name: string;
+    start: string;
+    end: string;
+    route_data: string;
+    id_user?: number;
+}

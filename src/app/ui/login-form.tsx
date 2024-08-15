@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  AtSymbolIcon,
-  KeyIcon,
-  ExclamationCircleIcon,
-} from '@heroicons/react/24/outline';
+import {AtSymbolIcon,KeyIcon,ExclamationCircleIcon,} from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
