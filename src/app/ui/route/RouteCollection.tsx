@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { TodoListCollection } from "../lib/definitions";
-import TodoCollectionItem from "./TodoCollectionItem";
-import { getCollections, postCollection, deleteCollection, putCollection } from "../lib/actions";
+import { RouteListCollection } from "../../lib/definitions";
+import RouteCollectionItem from "./RouteCollectionItem";
+import { getRouteCollections, postRouteCollection, deleteRouteCollection, putRouteCollection } from "../../lib/actions";
 
 
-export default function TodoCollection() {
-  const [todos, setTodos] = useState<TodoListCollection[]>([]); // fetch
+export default function RouteCollection() {
+  const [todos, setTodos] = useState<RouteListCollection[]>([]); // fetch
   const [newTodo, setNewTodo] = useState(""); // add
   const router = useRouter();
   const [userId, setUserId] =useState<number>(); //localstorage
@@ -23,15 +23,15 @@ export default function TodoCollection() {
 
   useEffect(() => {
     if (userId !== undefined) { 
-    const fetchPrevTodos = async () => {
+    const fetchPrevRoutes = async () => {
       try {
-        const data = await getCollections(userId);
+        const data = await getRouteCollections(userId);
         setTodos(data);
       } catch (err) {
         console.error('Failed to fetch data', err);
       }
       };
-      fetchPrevTodos();
+      fetchPrevRoutes();
     }
   }, [userId]); 
 
@@ -42,8 +42,8 @@ export default function TodoCollection() {
     try {
       const formData = new FormData();
       formData.append("description", newTodo);
-      const data = await postCollection(formData, userId);
-      const updatedData = await getCollections(userId);
+      const data = await postRouteCollection(formData, userId);
+      const updatedData = await getRouteCollections(userId);
       setTodos(updatedData);
       setNewTodo("");
     } catch (err) {
@@ -55,8 +55,8 @@ export default function TodoCollection() {
     if (userId === undefined) return;
 
     try {
-      await deleteCollection(collection_id);
-      const updatedData = await getCollections(userId);
+      await deleteRouteCollection(collection_id);
+      const updatedData = await getRouteCollections(userId);
       setTodos(updatedData);
     } catch (err) {
       console.error("Error removing", err);
@@ -67,8 +67,8 @@ export default function TodoCollection() {
     if (userId === undefined) return;
 
     try {
-      await putCollection(collection_id, collection_name);
-      const updatedData = await getCollections(userId);
+      await putRouteCollection(collection_id, collection_name);
+      const updatedData = await getRouteCollections(userId);
       setTodos(updatedData);
     } catch (err) {
       console.error("Error updating", err);
@@ -111,15 +111,15 @@ export default function TodoCollection() {
 
       <div>
             <ul>
-                {todos.map((collection: TodoListCollection) => (
-                    <li key={collection.collection_id} 
+                {todos.map((collection: RouteListCollection) => (
+                    <li key={collection.route_collection_id} 
                         className="p-2 shadow-md rounded-md"
                     >
-                        <TodoCollectionItem
-                            collection_id={collection.collection_id}
-                            collection_name={collection.collection_name}
+                        <RouteCollectionItem
+                            collection_id={collection.route_collection_id}
+                            collection_name={collection.route_collection_name}
                             onEdit={updateCollection}
-                            onRemove={()=> removeCollection(collection.collection_id)}
+                            onRemove={()=> removeCollection(collection.route_collection_id)}
                             onRedirect={redirect}
                         />
                     </li>

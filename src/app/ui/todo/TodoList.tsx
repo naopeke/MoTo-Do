@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Todo } from "../lib/definitions"; 
+import { Todo } from "../../lib/definitions"; 
 import TodoItem from "./TodoItem";
-import { getTodos, postTodo, deleteTodo, putTodo, doneTodo } from "../lib/actions";
+import { getTodos, postTodo, deleteTodo, putTodo, doneTodo } from "../../lib/actions";
 
 export default function TodoList(){
 

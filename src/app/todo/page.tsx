@@ -1,8 +1,4 @@
-import { TodoListCollection } from '../lib/definitions';
-import TodoCollection from '../ui/TodoCollection';
-import styles from '../ui/home.module.css';
-import Image from "next/image"; 
-
+import TodoCollection from '../ui/todo/TodoCollection';
 
 export default function TodoPage() {
 

@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@vercel/postgres"
-import { Todo, TodoListCollection } from "./definitions";
+import { RouteListCollection, Todo, TodoListCollection } from "./definitions";
 import bcrypt from 'bcrypt';
 
 export async function loginUser(formData: FormData) {
@@ -270,7 +270,93 @@ export async function deleteCollection(collection_id: number) {
 }
 
 
+export async function getRouteCollections(user_id: number){
+    let client;
+    try {
+        client = await db.connect();
+        const data = await client.sql`
+            SELECT * FROM routecollections
+            WHERE user_id = ${user_id}
+        ;`;
 
+        const collections: RouteListCollection[] = data.rows.map(row => ({
+            route_collection_id: row.collection_id,
+            route_collection_name: row.description,
+        }));
+        return collections;
+    } catch (err){
+        console.error('Error fetching Collections:', err);
+        throw new Error('Failed to fetch Collections');
+    } finally {
+        client?.release();
+    }
+}
+
+export async function postRouteCollection(formData: FormData, user_id: number){
+    const route_collection_name= formData.get('route_collection_name') as string;
+    let client;
+    try {
+        client = await db.connect();
+        const data = await client.sql`
+        INSERT INTO routecollections (route_collection_name, user_id)
+        VALUES (${route_collection_name}, ${user_id})
+        RETURNING route_collection_id, route_collection_name, user_id
+        `
+        console.log('Inserted data in back', data.rows);
+        return data.rows.map((row:any)=>({
+            route_collection_id: row.collection_id,
+            route_collection_name: row.collection_name,
+            user_id: row.user_id
+        }))
+    } catch (err){
+        console.error('Error posting', err);
+        throw new Error('Error inserting new data');
+    } finally {
+        client?.release();
+    }
+}
+
+
+export async function putRouteCollection(route_collection_id: number, route_collection_name: string){
+    let client;
+    try {
+        client = await db.connect();
+        const data = await client.sql`
+        UPDATE todos
+        SET route_collection_name = ${route_collection_name}
+        WHERE route_collection_id = ${route_collection_id}
+        RETURNING route_collection_id, route_collection_name
+        `
+        console.log('Inserted data in back', data.rows);
+        return data.rows.map((row: any) =>({
+            route_collection_id: row.route_collection_id,
+            route_collection_name: row.route_collection_name,
+        }))
+    } catch (err) {
+        console.error('Error putting', err);
+        throw new Error ('Error editing data');
+    } finally {
+        client?.release();
+    }
+}
+
+
+export async function deleteRouteCollection(route_collection_id: number) {
+    let client;
+    try {
+        client = await db.connect();
+        const data = await client.sql`
+            DELETE FROM todos WHERE route_collection_id = ${route_collection_id};
+        `
+        console.log('Deleted', data.rows);
+        return { message: 'deleted'}
+    } catch (err){
+        console.error('Error deleting', err);
+        throw new Error ('Error deleting data');
+    } finally {
+        client?.release();
+    }
+}
 // export const updateTodoOrder = async (orderedTodos: Todo[]) => {
 //     let client:any;
 //     try {

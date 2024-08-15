@@ -1,4 +1,4 @@
-import TodoList from "../../ui/TodoList";
+import TodoList from "../../ui/todo/TodoList";
 
 
 export default function TodoPage() {
