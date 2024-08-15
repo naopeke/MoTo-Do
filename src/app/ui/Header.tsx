@@ -26,20 +26,21 @@ export default function Header() {
 
 
     return(
-        <header className={`${isOpenMenu ? 'h-48' : 'h-16'} transition-all duration-300`}>            
-            <nav className="flex justify-between items-center">
+        // <header className={`${isOpenMenu ? 'h-48 py-2' : 'h-15'} transition-all duration-300`}>
+            <header className={` ${isOpenMenu ? 'bg-white' : ''} transition-all duration-300`}>
+               <nav className="flex justify-between items-center">
                 <div>
-                    <Link title="App Title" href="/" className="text-pink-600 font-extrabold text-xl ml-5">MoTo-Do</Link>
+                    <Link title="App Title" href="/" className="text-pink-600 font-extrabold text-xl px-10 py-4">MoTo-Do</Link>
                 </div>            
                     <div className="block lg:hidden">
                         {!isOpenMenu ? (
-                        <button onClick={toggleMenu} className="flex items-center px-3 py-2 border-none ">
+                        <button onClick={toggleMenu} className="flex items-center px-10 py-4 border-none ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#000" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                         </button>
                         ):(
-                            <button onClick={toggleMenu} className=" mr-5 mt-4 absolute top-2 right-2 lg:hidden">
+                            <button onClick={toggleMenu} className="px-10 py-4 absolute top-2 right-2 lg:hidden">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -48,7 +49,7 @@ export default function Header() {
                     </div>
 
                     <div
-                    className={`${isOpenMenu ? 'flex flex-col items-center absolute inset-x-0 top-16 bg-white py-4 z-10' : 'hidden lg:flex'}`}>         
+                    className={`${isOpenMenu ? 'flex flex-col items-center absolute inset-x-0 top-16 bg-white py-4' : 'hidden lg:flex'}`}>         
                     {isLoggedIn ? (
                         <>
                             <Link className={`link ${pathname === '/about' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white`} href="/about">
