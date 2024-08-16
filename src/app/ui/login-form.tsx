@@ -38,6 +38,7 @@ export default function LoginForm() {
         console.log('User data', user)
         if (user){
           localStorage.setItem('user', JSON.stringify(user));
+          window.dispatchEvent(new Event('storage')); //added to check the status of local strage
           router.push('/todo');
         }
       } catch(err){

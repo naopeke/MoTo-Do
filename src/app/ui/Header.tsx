@@ -11,13 +11,23 @@ export default function Header() {
     const [isOpenMenu, setIsOpenMenu] = useState(false);
 
     useEffect(()=> {
-        const user = localStorage.getItem('user');
-        setIsLoggedIn(user !== null);
+        const checkLogin = () => {
+            const user = localStorage.getItem('user');
+            setIsLoggedIn(user !== null);
+        };
+        checkLogin();
+
+        // needs to check about the status again
+        window.addEventListener('storage', checkLogin);
+        return () => {
+            window.removeEventListener('storage', checkLogin);
+        };
     },[]);
 
     const handleLogout = async () => {
         localStorage.removeItem('user');
         router.push('/')
+        setIsLoggedIn(false);
     };
 
     const toggleMenu = () =>{
