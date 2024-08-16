@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
+import { useRouter, usePathname } from 'next/navigation';
 import { Todo } from "../lib/definitions"; 
 import TodoItem from "./TodoItem";
 import { getTodos, postTodo, deleteTodo, putTodo, doneTodo } from "../lib/actions";
@@ -10,10 +11,16 @@ export default function TodoList(){
     const [ todos, setTodos ] = useState<Todo[]>([]); // fetch
     const [ newTodo, setNewTodo ] = useState(''); //add
 
+    const router = useRouter();
+    const pathname = usePathname();
+
+    //pathname is string so needs to change into number
+    const collection_id = parseInt(pathname.split('/').pop() || '0', 10);
+
     useEffect(()=>{
         const fetchPrevTodos = async () => {
             try {
-                const data = await getTodos();
+                const data = await getTodos(collection_id);
                 setTodos(data);
             } catch (err) {
                 console.error('Failed to fetch data', err);
@@ -27,9 +34,9 @@ export default function TodoList(){
         try {
             const formData = new FormData();
             formData.append('description', newTodo)
-            const data = await postTodo(formData);
+            const data = await postTodo(formData, collection_id);
             console.log('data in front', data[0].item_id);
-            const updatedData = await getTodos();
+            const updatedData = await getTodos(collection_id);
             setTodos(updatedData);
             setNewTodo('');
         } catch (err){
@@ -41,7 +48,7 @@ export default function TodoList(){
         try {
             const data = await deleteTodo(item_id);
             console.log('data after removing front', data);
-            const updatedData = await getTodos();
+            const updatedData = await getTodos(collection_id);
             setTodos(updatedData);
         } catch (err){
             console.error('Error removing', err);
@@ -52,7 +59,7 @@ export default function TodoList(){
         try {
             const data = await putTodo(item_id, description);
             console.log('data after editing front', data);
-            const updatedData = await getTodos();
+            const updatedData = await getTodos(collection_id);
             setTodos(updatedData);
         } catch (err){
             console.error('Error removing', err);

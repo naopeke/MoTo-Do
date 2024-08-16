@@ -67,18 +67,20 @@ export async function registerUser(formData: FormData) {
 }
 
 
-export async function getTodos(){
+export async function getTodos(collection_id: number){
     let client;
     try {
         client = await db.connect();
         const data = await client.sql`
             SELECT * FROM todos
+            WHERE collection_id = ${collection_id}
         ;`;
 
         const todos: Todo[] = data.rows.map(row => ({
             item_id: row.item_id,
             description: row.description,
             isDone: row.isdone,
+            collection_id: row.collection_id
         }));
         return todos;
     } catch (err){
@@ -90,22 +92,23 @@ export async function getTodos(){
 }
 
 
-export async function postTodo(formData: FormData){
+export async function postTodo(formData: FormData, collection_id:number){
     const description = formData.get('description') as string;
     const isDone = 'false';
     let client;
     try {
         client = await db.connect();
         const data = await client.sql`
-        INSERT INTO todos (description, isDone)
-        VALUES (${description}, ${isDone})
-        RETURNING item_id
+        INSERT INTO todos (description, isDone, collection_id)
+        VALUES (${description}, ${isDone}, ${collection_id})
+        RETURNING item_id, description, isDone, collection_id
         `
         console.log('Inserted data in back', data.rows);
         return data.rows.map((row:any)=>({
             item_id: row.item_id,
             description: row.description,
             isDone: row.isDone,
+            collection_id: row.collection_id
         }))
     } catch (err){
         console.error('Error posting', err);
@@ -191,7 +194,7 @@ export async function getCollections(user_id: number){
 
         const collections: TodoListCollection[] = data.rows.map(row => ({
             collection_id: row.collection_id,
-            collection_name: row.description,
+            collection_name: row.collection_name,
         }));
         return collections;
     } catch (err){
@@ -257,7 +260,7 @@ export async function deleteCollection(collection_id: number) {
     try {
         client = await db.connect();
         const data = await client.sql`
-            DELETE FROM todos WHERE collection_id = ${collection_id};
+            DELETE FROM collections WHERE collection_id = ${collection_id};
         `
         console.log('Deleted', data.rows);
         return { message: 'deleted'}
@@ -267,6 +270,24 @@ export async function deleteCollection(collection_id: number) {
     } finally {
         client?.release();
     }
+}
+
+export async function getCollectionNameById(collection_id: number){
+    let client;
+    try {
+        client = await db.connect();
+        const data = await client.sql`
+        SELECT collection_name 
+        FROM collections
+        WHERE collection_id = ${collection_id} 
+        `
+        return data.rows[0].collection_name;
+    }catch(err){
+        console.error('Error fetching collection name', err)
+    }finally{
+        client?.release();
+    }
+
 }
 
 

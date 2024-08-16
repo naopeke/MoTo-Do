@@ -8,7 +8,7 @@ import { getCollections, postCollection, deleteCollection, putCollection } from 
 
 
 export default function TodoCollection() {
-  const [todos, setTodos] = useState<TodoListCollection[]>([]); // fetch
+  const [collection, setCollection] = useState<TodoListCollection[]>([]); // fetch
   const [newTodo, setNewTodo] = useState(""); // add
   const router = useRouter();
   const [userId, setUserId] =useState<number>(); //localstorage
@@ -26,7 +26,7 @@ export default function TodoCollection() {
     const fetchPrevTodos = async () => {
       try {
         const data = await getCollections(userId);
-        setTodos(data);
+        setCollection(data);
       } catch (err) {
         console.error('Failed to fetch data', err);
       }
@@ -41,10 +41,11 @@ export default function TodoCollection() {
 
     try {
       const formData = new FormData();
-      formData.append("description", newTodo);
+      formData.append("collection_name", newTodo);
       const data = await postCollection(formData, userId);
+      console.log('Created collection',data)
       const updatedData = await getCollections(userId);
-      setTodos(updatedData);
+      setCollection(updatedData);
       setNewTodo("");
     } catch (err) {
       console.error("Error adding", err);
@@ -57,7 +58,7 @@ export default function TodoCollection() {
     try {
       await deleteCollection(collection_id);
       const updatedData = await getCollections(userId);
-      setTodos(updatedData);
+      setCollection(updatedData);
     } catch (err) {
       console.error("Error removing", err);
     }
@@ -69,7 +70,7 @@ export default function TodoCollection() {
     try {
       await putCollection(collection_id, collection_name);
       const updatedData = await getCollections(userId);
-      setTodos(updatedData);
+      setCollection(updatedData);
     } catch (err) {
       console.error("Error updating", err);
     }
@@ -111,7 +112,7 @@ export default function TodoCollection() {
 
       <div>
             <ul>
-                {todos.map((collection: TodoListCollection) => (
+                {collection.map((collection: TodoListCollection) => (
                     <li key={collection.collection_id} 
                         className="p-2 shadow-md rounded-md"
                     >
