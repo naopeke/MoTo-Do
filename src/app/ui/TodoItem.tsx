@@ -30,8 +30,6 @@ export default function TodoItem ({item_id, description, isDone, onEdit, onRemov
         const newStatus = !frontIsDone;
         setFrontIsDone(newStatus);
         await doneTodo(item_id, newStatus);
-
-        const updatedTodos = await getTodos();
     }
 
     return (

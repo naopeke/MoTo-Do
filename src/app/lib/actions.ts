@@ -194,7 +194,7 @@ export async function getCollections(user_id: number){
 
         const collections: TodoListCollection[] = data.rows.map(row => ({
             collection_id: row.collection_id,
-            collection_name: row.description,
+            collection_name: row.collection_name,
         }));
         return collections;
     } catch (err){
