@@ -41,8 +41,9 @@ export default function TodoCollection() {
 
     try {
       const formData = new FormData();
-      formData.append("description", newTodo);
+      formData.append("collection_name", newTodo);
       const data = await postCollection(formData, userId);
+      console.log('Created collection',data)
       const updatedData = await getCollections(userId);
       setCollection(updatedData);
       setNewTodo("");
