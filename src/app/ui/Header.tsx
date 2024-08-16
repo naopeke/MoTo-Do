@@ -26,8 +26,7 @@ export default function Header() {
 
 
     return(
-        // <header className={`${isOpenMenu ? 'h-48 py-2' : 'h-15'} transition-all duration-300`}>
-            <header className={` ${isOpenMenu ? 'bg-white' : ''} transition-all duration-300`}>
+            <header className={` ${isOpenMenu ? 'bg-white h-48 py-2' : 'h-15'} transition-all duration-300`}>
                <nav className="flex justify-between items-center">
                 <div>
                     <Link title="App Title" href="/" className="text-pink-600 font-extrabold text-xl px-10 py-4">MoTo-Do</Link>
@@ -49,7 +48,7 @@ export default function Header() {
                     </div>
 
                     <div
-                    className={`${isOpenMenu ? 'flex flex-col items-center absolute inset-x-0 top-16 bg-white py-4' : 'hidden lg:flex'}`}>         
+                    className={`${isOpenMenu ? 'flex flex-col items-center absolute inset-x-0 top-20 bg-white py-4 z-10' : 'hidden lg:flex'}`}>         
                     {isLoggedIn ? (
                         <>
                             <Link className={`link ${pathname === '/about' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white`} href="/about">
