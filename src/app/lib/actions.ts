@@ -272,6 +272,24 @@ export async function deleteCollection(collection_id: number) {
     }
 }
 
+export async function getCollectionNameById(collection_id: number){
+    let client;
+    try {
+        client = await db.connect();
+        const data = await client.sql`
+        SELECT collection_name 
+        FROM collections
+        WHERE collection_id = ${collection_id} 
+        `
+        return data.rows[0].collection_name;
+    }catch(err){
+        console.error('Error fetching collection name', err)
+    }finally{
+        client?.release();
+    }
+
+}
+
 
 
 // export const updateTodoOrder = async (orderedTodos: Todo[]) => {
