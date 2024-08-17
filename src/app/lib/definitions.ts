@@ -26,3 +26,8 @@ export type Route = {
     route_data: string;
     id_user?: number;
 }
+
+export type LatLong = {
+    lat: number;
+    lng: number;
+}

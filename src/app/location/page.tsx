@@ -1,10 +1,11 @@
+import { Map } from "@/app/ui/map"
 
-export default function RoutePage (){
+export default function LocationPage (){
 
     return (
         <>
             <div className="grid grid-cols-2">
-                <div></div>
+                <div><Map/></div>
                 <div></div>
             </div>
         </>
