@@ -1,5 +1,5 @@
-#MoTodo
-MoTodo is the ultimate to-do list app for bikers, built with Next.js 14.
+## MoTo-Do
+MoTo-Do is the ultimate to-do list app for bikers, built with Next.js 14.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
