@@ -236,7 +236,7 @@ export async function putCollection(collection_id: number, collection_name: stri
     try {
         client = await db.connect();
         const data = await client.sql`
-        UPDATE todos
+        UPDATE collections
         SET collection_name = ${collection_name}
         WHERE collection_id = ${collection_id}
         RETURNING collection_id, collection_name
