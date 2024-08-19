@@ -61,25 +61,25 @@ export default function Header() {
                     className={`${isOpenMenu ? 'flex flex-col items-center absolute inset-x-0 top-20 bg-white py-4 z-10' : 'hidden lg:flex'}`}>         
                     {isLoggedIn ? (
                         <>
-                            <Link className={`link ${pathname === '/about' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white`} href="/about">
+                            <Link className={`link ${pathname === '/about' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white transition-all duration-300`} href="/about">
                                 About
                             </Link>
-                            <Link className={`link ${pathname === '/todo' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white`} href="/todo">
+                            <Link className={`link ${pathname === '/todo' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white transition-all duration-300`} href="/todo">
                                 Todo
                             </Link>
-                            <Link className={`link ${pathname === '/route' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white`} href="/todo">
+                            <Link className={`link ${pathname === '/route' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white transition-all duration-300`} href="/todo">
                                 My Route
                             </Link>
-                            <button title="Login" onClick={handleLogout} className="px-10 py-4 font-semibold">
+                            <button title="Login" onClick={handleLogout} className="px-10 py-4 font-semibold hover:text-pink-600 transition-all duration-300">
                                 Logout
                             </button>
                         </>
                     ) : (
                         <>
-                            <Link className={`link ${pathname === '/about' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white`} href="/about">
+                            <Link className={`link ${pathname === '/about' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white transition-all duration-300`} href="/about">
                                 About
                             </Link>
-                            <Link title="Login" href="/login" className="px-10 py-4 font-semibold">
+                            <Link title="Login" href="/login" className="px-10 py-4 font-semibold hover:text-pink-600 transition-all duration-300">
                                 Login
                             </Link>
                         </>
