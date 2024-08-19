@@ -67,9 +67,6 @@ export default function Header() {
                             <Link className={`link ${pathname === '/todo' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white transition-all duration-300`} href="/todo">
                                 Todo
                             </Link>
-                            <Link className={`link ${pathname === '/route' ? 'active' : ''} px-10 py-4 border font-semibold border-white hover:bg-pink-600 hover:text-white transition-all duration-300`} href="/todo">
-                                My Route
-                            </Link>
                             <button title="Login" onClick={handleLogout} className="px-10 py-4 font-semibold hover:text-pink-600 transition-all duration-300">
                                 Logout
                             </button>
