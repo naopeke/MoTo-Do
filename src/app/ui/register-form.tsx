@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { redirect } from 'next/navigation'
 import { useRouter } from 'next/navigation';
 import { registerUser } from '../lib/actions';
-
+import {ExclamationCircleIcon,} from '@heroicons/react/24/outline';
 
 
 export default function RegisterForm() {
@@ -18,6 +18,7 @@ export default function RegisterForm() {
 
   const FormSchema = z.object({
     username: z.string().min(2, {message:'Username must be as leeast 2 characters.'}),
+    email: z.string().email({ message: 'Invalid email address.' }),
     password: z.string().min(6, {message:'Password must be at least 6 characters.'})
   });
 
@@ -45,11 +46,19 @@ export default function RegisterForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    formData.append('email',email);
-    formData.append('password', password);
+    const validationCheck = FormSchema.safeParse({username, email, password});
+    if(!validationCheck.success){
+      setError(validationCheck.error.errors.map(e => e.message).join(','));
+      return;
+    }
+
 
     try {
+      const formData = new FormData(e.currentTarget);
+      formData.append('username',username);
+      formData.append('email',email);
+      formData.append('password', password);
+
       const user = await registerUser(formData);
       console.log('User data', user)
       // router.push('/todo');
@@ -108,6 +117,7 @@ export default function RegisterForm() {
               >
                 Register
                 </button>
+                {error && <p className="text-red-500"><ExclamationCircleIcon/>{error}</p>}
               </form>
             </div>
           </div>
