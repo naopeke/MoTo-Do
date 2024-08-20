@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@vercel/postgres"
-import { Todo, TodoListCollection } from "./definitions";
+import { RegisterFormSchema, Todo, TodoListCollection } from "./definitions";
 import bcrypt from 'bcrypt';
 import { FormSchema } from "./definitions";
 
@@ -45,48 +45,9 @@ export async function loginUser({email, password}:FormSchema) {
     }
 }
 
-// export async function loginUser(formData: FormData) {
-//     const email = formData.get('email') as string;
-//     const password = formData.get('password') as string;
-//     let client;
-//     try {
-//         client = await db.connect();
-//         const data = await client.sql`
-//             SELECT * FROM users
-//             WHERE email = ${email}
-//         `;
-//         console.log('Login in back', data.rows);
 
-//         const user = data.rows[0];
-//         if (!user) {
-//             throw new Error('User not found');
-//         }
-
-//         const passwordMatch = await bcrypt.compare(password, user.password);
-//         if (!passwordMatch) {
-//             throw new Error('Password does not match');
-//         }
-
-//         return {
-//             user_id: user.user_id,
-//             username: user.username,
-//             email: user.email,
-//         };
-//     } catch (err) {
-//         console.error('Error posting', err);
-//         throw new Error('Error matching the data');
-//     } finally {
-//         client?.release();
-//     }
-// }
-
-
-export async function registerUser(formData: FormData) {
-    const username = formData.get('username') as string;
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+export async function registerUser({username, email, password}: RegisterFormSchema) {
     let client;
-
     try {
         client = await db.connect();
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -300,6 +261,24 @@ export async function deleteCollection(collection_id: number) {
     let client;
     try {
         client = await db.connect();
+
+        /** first detect the item_id*/
+        const itemsResult = await client.sql`
+            SELECT item_id
+            FROM items
+            WHERE collection_id = ${collection_id}
+        `;
+        const itemIds: number[] = itemsResult.rows.map(row => row.item_id);
+        const itemIdsList = itemIds.join(',');
+
+        /** next, delete items */
+        await client.sql`
+            DELETE FROM items
+            WHERE item_id IN (${itemIdsList});
+        `;
+        console.log('Deleted items:', itemIds);
+
+        /** finally, delete collection with collection_id*/
         const data = await client.sql`
             DELETE FROM collections WHERE collection_id = ${collection_id};
         `
