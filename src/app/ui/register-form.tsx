@@ -62,7 +62,7 @@ export default function RegisterForm() {
 
       const user = await registerUser(formData);
       console.log('User data', user)
-      // router.push('/todo');
+      router.push('/login');
     } catch(err){
       console.error('Error logging in', err);
       setError('Does not match with the database');

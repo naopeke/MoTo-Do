@@ -259,6 +259,26 @@ export async function deleteCollection(collection_id: number) {
     let client;
     try {
         client = await db.connect();
+
+        /**first detect the item_id */
+        const itemsResult = await client.sql`
+            SELECT item_id
+            FROM items
+            WHERE collection_id = ${collection_id}
+        `;
+        const itemIds: number[] = itemsResult.rows.map(row => row.item_id);
+        const itemIdsList = itemIds.join(',');
+        /**https://stackoverflow.com/questions/34627026/in-vs-any-operator-in-postgresql */
+        
+        /** next, delete items */
+        await client.sql`
+            DELETE FROM items
+            WHERE item_id IN (${itemIdsList});
+        `;
+        console.log('Deleted items:', itemIds);
+
+
+        /** finally delete collection with collection_id */
         const data = await client.sql`
             DELETE FROM collections WHERE collection_id = ${collection_id};
         `

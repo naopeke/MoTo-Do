@@ -18,12 +18,18 @@ export default function LoginForm() {
 
     const FormSchema = z.object({
         email: z.string().email ({ message: 'Invalid email address'}),
-        password: z.string().min(6, {message: 'Password must be at least 6 characters'})
+        password: z.string().min(6, {message: 'Invalid password'})
     });
 
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      const validationCheck = FormSchema.safeParse({email, password});
+      if (!validationCheck.success){
+        setError(validationCheck.error.errors.map(e => e.message).join('.'));
+        return;
+      }
 
       const formData = new FormData(e.currentTarget);
       formData.append('email',email);
