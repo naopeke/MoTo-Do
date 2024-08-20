@@ -6,6 +6,7 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginUser } from '../lib/actions';
 import z from "zod";
+import { FormSchema } from '../lib/definitions';
 
 
 export default function LoginForm() {
@@ -15,22 +16,21 @@ export default function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-
-    const FormSchema = z.object({
-        email: z.string().email ({ message: 'Invalid email address'}),
-        password: z.string().min(6, {message: 'Password must be at least 6 characters'})
-    });
-
-
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      const formData = new FormData(e.currentTarget);
-      formData.append('email',email);
-      formData.append('password', password);
+      // const formData = new FormData(e.currentTarget);
+      // formData.append('email',email);
+      // formData.append('password', password);
+      const validation = FormSchema.safeParse({email, password});
+      
+      if(!validation.success){
+        setError(validation.error.message)
+        return;
+      }
 
       try {
-        const user = await loginUser(formData);
+        const user = await loginUser({email, password});
         console.log('User data', user)
         if (user){
           localStorage.setItem('user', JSON.stringify(user));
@@ -65,10 +65,11 @@ export default function LoginForm() {
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="email"
-                type="email"
+                // type="email"
                 name="email"
                 placeholder="Enter your email address"
                 required
+                onChange={(e)=>setEmail(e.target.value)}
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -89,6 +90,8 @@ export default function LoginForm() {
                 placeholder="Enter password"
                 required
                 minLength={6}
+                onChange={(e)=>setPassword(e.target.value)}
+
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>

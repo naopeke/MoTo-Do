@@ -3,10 +3,16 @@
 import { db } from "@vercel/postgres"
 import { Todo, TodoListCollection } from "./definitions";
 import bcrypt from 'bcrypt';
+import { FormSchema } from "./definitions";
 
-export async function loginUser(formData: FormData) {
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+
+// type loginRequest = {
+//     email: string,
+//     password: string
+// }
+
+export async function loginUser({email, password}:FormSchema) {
+
     let client;
     try {
         client = await db.connect();
@@ -38,6 +44,41 @@ export async function loginUser(formData: FormData) {
         client?.release();
     }
 }
+
+// export async function loginUser(formData: FormData) {
+//     const email = formData.get('email') as string;
+//     const password = formData.get('password') as string;
+//     let client;
+//     try {
+//         client = await db.connect();
+//         const data = await client.sql`
+//             SELECT * FROM users
+//             WHERE email = ${email}
+//         `;
+//         console.log('Login in back', data.rows);
+
+//         const user = data.rows[0];
+//         if (!user) {
+//             throw new Error('User not found');
+//         }
+
+//         const passwordMatch = await bcrypt.compare(password, user.password);
+//         if (!passwordMatch) {
+//             throw new Error('Password does not match');
+//         }
+
+//         return {
+//             user_id: user.user_id,
+//             username: user.username,
+//             email: user.email,
+//         };
+//     } catch (err) {
+//         console.error('Error posting', err);
+//         throw new Error('Error matching the data');
+//     } finally {
+//         client?.release();
+//     }
+// }
 
 
 export async function registerUser(formData: FormData) {

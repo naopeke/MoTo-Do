@@ -6,28 +6,16 @@ import { Todo } from "../lib/definitions";
 import TodoItem from "./TodoItem";
 import { getTodos, postTodo, deleteTodo, putTodo, doneTodo } from "../lib/actions";
 
-export default function TodoList(){
+export default function TodoList(props:{todos:Todo[]}){
 
-    const [ todos, setTodos ] = useState<Todo[]>([]); // fetch
+    const [ todos, setTodos ] = useState(props.todos); // fetch
     const [ newTodo, setNewTodo ] = useState(''); //add
 
     const router = useRouter();
     const pathname = usePathname();
 
-    //pathname is string so needs to change into number
     const collection_id = parseInt(pathname.split('/').pop() || '0', 10);
 
-    useEffect(()=>{
-        const fetchPrevTodos = async () => {
-            try {
-                const data = await getTodos(collection_id);
-                setTodos(data);
-            } catch (err) {
-                console.error('Failed to fetch data', err);
-            }
-        };
-        fetchPrevTodos();
-    }, []);
 
     const addTodo = async() =>{
         if (!newTodo.trim()) return;
