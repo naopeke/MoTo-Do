@@ -47,6 +47,7 @@ export default function RegisterForm() {
     e.preventDefault();
 
     const validationCheck = FormSchema.safeParse({username, email, password});
+    console.log(validationCheck); 
     if(!validationCheck.success){
       setError(validationCheck.error.errors.map(e => e.message).join(','));
       return;
@@ -117,7 +118,7 @@ export default function RegisterForm() {
               >
                 Register
                 </button>
-                {error && <p className="text-red-500"><ExclamationCircleIcon/>{error}</p>}
+                {error && <p className="text-red-500">{error}</p>}
               </form>
             </div>
           </div>
