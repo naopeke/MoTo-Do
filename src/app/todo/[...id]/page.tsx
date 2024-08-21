@@ -1,8 +1,7 @@
-// 'use client'
+ 'use client'
 
 import TodoList from "../../ui/TodoList";
 import { getCollectionNameById, getTodos } from "@/app/lib/actions";
-import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
 export default async function TodoPage() {

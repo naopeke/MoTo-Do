@@ -1,6 +1,6 @@
 'use client';
 
-import {AtSymbolIcon,KeyIcon,ExclamationCircleIcon,} from '@heroicons/react/24/outline';
+import {AtSymbolIcon,KeyIcon} from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -19,9 +19,6 @@ export default function LoginForm() {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      // const formData = new FormData(e.currentTarget);
-      // formData.append('email',email);
-      // formData.append('password', password);
       const validation = FormSchema.safeParse({email, password});
       
       if(!validation.success){
@@ -65,7 +62,6 @@ export default function LoginForm() {
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="email"
-                // type="email"
                 name="email"
                 placeholder="Enter your email address"
                 required
@@ -100,7 +96,7 @@ export default function LoginForm() {
         <button type="submit" className="mt-4 w-full aria-disabled={pending}">
           Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </button>
-        {error && <p className="text-red-500"><ExclamationCircleIcon/>{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
       </div>
     </form>
   );
