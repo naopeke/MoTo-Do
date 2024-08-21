@@ -34,7 +34,7 @@ export type LatLong = {
     lng: number;
 }
 
-export const FormSchema = z.object({
+export const LoginFormSchema = z.object({
     email: z.string().email ({ message: 'Invalid email address'}),
     password: z.string().min(6, {message: 'Password must be at least 6 characters'})
 });
@@ -45,6 +45,6 @@ export const RegisterFormSchema = z.object({
     password: z.string().min(6, {message: 'Password must be at least 6 characters'})
 });
 
-export type FormSchema = z.infer <typeof FormSchema>;
+export type LoginFormSchema = z.infer <typeof LoginFormSchema>;
 
 export type RegisterFormSchema = z.infer <typeof RegisterFormSchema>;

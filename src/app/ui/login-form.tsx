@@ -5,8 +5,7 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginUser } from '../lib/actions';
-import z from "zod";
-import { FormSchema } from '../lib/definitions';
+import { LoginFormSchema } from '../lib/definitions';
 
 
 export default function LoginForm() {
@@ -19,7 +18,7 @@ export default function LoginForm() {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      const validation = FormSchema.safeParse({email, password});
+      const validation = LoginFormSchema.safeParse({email, password});
       
       if(!validation.success){
         setError(validation.error.message)

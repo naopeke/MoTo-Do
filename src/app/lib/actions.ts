@@ -1,17 +1,10 @@
 "use server"
 
 import { db } from "@vercel/postgres"
-import { RegisterFormSchema, Todo, TodoListCollection } from "./definitions";
+import { LoginFormSchema, RegisterFormSchema, Todo, TodoListCollection } from "./definitions";
 import bcrypt from 'bcrypt';
-import { FormSchema } from "./definitions";
 
-
-// type loginRequest = {
-//     email: string,
-//     password: string
-// }
-
-export async function loginUser({email, password}:FormSchema) {
+export async function loginUser({email, password}:LoginFormSchema) {
 
     let client;
     try {
